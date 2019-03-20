@@ -14,12 +14,39 @@ africastalking.initialize(username, api_key)
 
 sms = africastalking.SMS
 
+#Validation methods
+
+def validate_phone_number(number):
+    if isinstance(number, str):
+        first_value = number[0]
+        if first_value is "0":
+            number.replace("0", "+254", 1)
+        elif "+254" in  number:
+            return number
+        else:
+            raise ValueError("This is not a valid phone number") 
+
+
+def validate_message(message):
+    if isinstance(message, str):
+        return message
+    else:
+        raise ValueError("Not string based content") 
+
 #recieve and send the SMS on the AT API
 
 @app.route("/sms-sending", methods=["GET","POST"])
 def sms_sending(): 
+    
+    data = request.get_json(force=True))
+    message = data['message']
+    phone_number = data['phoneNumber'] 
 
-    print(request.args.view_keys())
+    try:
+        sending_message = validate_message(message)
+        sending_phone_number = validate_phone_number(phone_number)
+    except Exception as e:
+        return str(status.HTTP_400_BAD_REQUEST)
 
     try:
         response = sms.send(sending_message, sending_phone_number)
