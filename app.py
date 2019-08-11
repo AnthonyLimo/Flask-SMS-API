@@ -46,7 +46,7 @@ def sms_sending():
         sending_message = validate_message(message)
         sending_phone_number = validate_phone_number(phone_number)
     except Exception as e:
-        return str(status.HTTP_400_BAD_REQUEST)
+        return str(status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     try:
         response = sms.send(sending_message, sending_phone_number)
